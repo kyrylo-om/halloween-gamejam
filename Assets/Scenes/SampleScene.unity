@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 1494431789}
   - component: {fileID: 1494431788}
   - component: {fileID: 1494431787}
+  - component: {fileID: 1494431791}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -242,6 +243,8 @@ GameObject:
   - component: {fileID: 1605925073}
   - component: {fileID: 1605925072}
   - component: {fileID: 1605925071}
+  - component: {fileID: 1605925074}
+  - component: {fileID: 1605925075}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -335,6 +338,7 @@ GameObject:
   - component: {fileID: 1845100002}
   - component: {fileID: 1845100003}
   - component: {fileID: 1845100004}
+  - component: {fileID: 1845100005}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -564,6 +568,66 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 52.177, y: -30, z: 0}
+--- !u!114 &1605925074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1605925070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2b2b2b2b2b2a7b8c9d0e1f2a3b4c5d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  reticleSize: 20
+  reticleThickness: 2
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  interactableColor: {r: 0, g: 1, b: 0, a: 1}
+  interactRange: 15
+  interactLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &1605925075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1605925070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5e5e5e5e5e5a7b8c9d0e1f2a3b4c5d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouseSensitivity: 2
+  moveSpeed: 5
+--- !u!114 &1494431791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494431786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3c3c3c3c3c3a7b8c9d0e1f2a3b4c5d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveOffset: {x: 0, y: 2, z: 0}
+  moveSpeed: 3
+--- !u!114 &1845100005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1845100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d4d4d4d4d4a7b8c9d0e1f2a3b4c5d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
