@@ -38,6 +38,13 @@ public class ReticleSystem : MonoBehaviour
 
     void Update()
     {
+        // Press Escape to unlock cursor
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
         // Raycast from camera center
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
@@ -63,13 +70,6 @@ public class ReticleSystem : MonoBehaviour
         currentTarget = null;
         currentColor = normalColor;
         currentPrompt = "";
-
-        // Press Escape to unlock cursor
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
 
         // Click to re-lock cursor when not on interactable
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
