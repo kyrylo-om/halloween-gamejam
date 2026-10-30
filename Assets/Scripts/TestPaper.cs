@@ -4,7 +4,7 @@ using UnityEngine;
 
 /// <summary>
 /// The test sheet. Each click reveals the next word of the essay
-/// and moves the hand to the end of that word.
+/// and moves the hand to the end of that word. Only works while the answer paper is out.
 /// </summary>
 public class TestPaper : MonoBehaviour, IInteractable
 {
@@ -13,6 +13,7 @@ public class TestPaper : MonoBehaviour, IInteractable
     public TextAsset essay;
     public TMP_Text text;
     public Hand hand;
+    public AnswerPaper answerPaper;
 
     // Character index of the last character of each word
     private readonly List<int> wordEnds = new List<int>();
@@ -38,6 +39,7 @@ public class TestPaper : MonoBehaviour, IInteractable
 
     public void Interact()
     {
+        if (!answerPaper.IsOut) return;
         if (wordsWritten >= wordEnds.Count) return;
 
         int lastChar = wordEnds[wordsWritten];
