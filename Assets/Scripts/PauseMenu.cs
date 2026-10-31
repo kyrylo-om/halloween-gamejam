@@ -20,10 +20,9 @@ public class PauseMenu : MonoBehaviour
         // Check for Escape or R key press
 #if ENABLE_INPUT_SYSTEM
         if (UnityEngine.InputSystem.Keyboard.current != null &&
-           (UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame ||
-            UnityEngine.InputSystem.Keyboard.current.rKey.wasPressedThisFrame))
+           (UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame ))
 #else
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.Escape) 
 #endif
         {
             if (IsGamePaused)

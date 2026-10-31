@@ -11990,7 +11990,7 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  showInGameVisionCones: 1
+  showInGameVisionCones: 0
   coneAlpha: 0.18
   audioSource: {fileID: 2200000016}
   footstepClip: {fileID: 8300000, guid: 20742727037e6ba45ab01ba33be2fe4e, type: 3}
