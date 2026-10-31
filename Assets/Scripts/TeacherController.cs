@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -73,6 +75,23 @@ public class TeacherController : MonoBehaviour
     [Range(0.05f, 0.4f)]
     public float coneAlpha = 0.18f;
 
+    [Header("Post-Processing Feedback")]
+    [Tooltip("Global Volume whose Film Grain & Vignette react to the teacher. Auto-detected if null.")]
+    public Volume postVolume;
+    [Tooltip("Distance at which film grain reaches its strongest intensity.")]
+    public float grainNearDistance = 1.5f;
+    [Tooltip("Distance beyond which film grain stays at its base intensity.")]
+    public float grainFarDistance = 8f;
+    [Range(0f, 1f)]
+    public float grainBaseIntensity = 0.35f;
+    [Range(0f, 1f)]
+    public float grainNearIntensity = 1f;
+    [Tooltip("Vignette intensity while the teacher is suspicious.")]
+    [Range(0f, 1f)]
+    public float suspicionVignetteIntensity = 0.8f;
+    [Tooltip("How fast the vignette intensity blends in/out (per second).")]
+    public float vignetteBlendSpeed = 4f;
+
     [Header("Audio Settings (Placeholders)")]
     [Tooltip("AudioSource component for 3D footsteps. Auto-created if null.")]
     public AudioSource audioSource;
@@ -121,6 +140,11 @@ public class TeacherController : MonoBehaviour
 
     private GameObject instantConeObj;
     private GameObject suspicionConeObj;
+
+    private FilmGrain filmGrain;
+    private Vignette vignette;
+    private float baseVignetteIntensity;
+    private float vignetteBlend = 0f;
 
     void Awake()
     {
@@ -190,6 +214,20 @@ public class TeacherController : MonoBehaviour
         {
             BuildVisionConeMeshes();
         }
+
+        if (postVolume == null)
+        {
+            postVolume = FindAnyObjectByType<Volume>();
+        }
+        if (postVolume != null)
+        {
+            // .profile returns a runtime copy, so the profile asset is not modified
+            postVolume.profile.TryGet(out filmGrain);
+            if (postVolume.profile.TryGet(out vignette))
+            {
+                baseVignetteIntensity = vignette.intensity.value;
+            }
+        }
     }
 
     void Update()
@@ -205,6 +243,7 @@ public class TeacherController : MonoBehaviour
         DetectCheating();
         HandlePatrolAndSuspicion();
         UpdateConeVisuals();
+        UpdatePostFX();
 
         // Check for suspicion alert audio trigger
         if (!wasSuspectingLastFrame && IsSuspectingPlayer)
@@ -584,6 +623,25 @@ public class TeacherController : MonoBehaviour
                 c.a = coneAlpha * pulse;
                 mr.material.color = c;
             }
+        }
+    }
+
+    /// <summary>
+    /// Film grain grows as the teacher gets closer; vignette intensifies while she is suspicious.
+    /// </summary>
+    private void UpdatePostFX()
+    {
+        if (filmGrain != null && playerTarget != null)
+        {
+            float dist = Vector3.Distance(transform.position, playerTarget.position);
+            float proximity = Mathf.InverseLerp(grainFarDistance, grainNearDistance, dist);
+            filmGrain.intensity.value = Mathf.Lerp(grainBaseIntensity, grainNearIntensity, proximity);
+        }
+
+        if (vignette != null)
+        {
+            vignetteBlend = Mathf.MoveTowards(vignetteBlend, IsSuspectingPlayer ? 1f : 0f, vignetteBlendSpeed * Time.deltaTime);
+            vignette.intensity.value = Mathf.Lerp(baseVignetteIntensity, suspicionVignetteIntensity, vignetteBlend);
         }
     }
 
