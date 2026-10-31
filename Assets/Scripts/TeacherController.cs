@@ -108,6 +108,9 @@ public class TeacherController : MonoBehaviour
     private bool wasSuspectingLastFrame = false;
     private Quaternion baseWaypointRotation;
 
+    private Animator animator;
+    private Vector3 lastPosition;
+
     private float displaySuspicion = 0f;
     private Texture2D whiteTexture;
     private GUIStyle headerStyle;
@@ -134,6 +137,9 @@ public class TeacherController : MonoBehaviour
         audioSource.minDistance = 1.5f;
         audioSource.maxDistance = 15f;
         audioSource.rolloffMode = AudioRolloffMode.Linear;
+
+        animator = GetComponentInChildren<Animator>();
+        lastPosition = transform.position;
     }
 
     void Start()
@@ -188,6 +194,8 @@ public class TeacherController : MonoBehaviour
 
     void Update()
     {
+        UpdateWalkAnimation();
+
         if (IsGameOver)
         {
             HandleGameOverInput();
@@ -207,6 +215,18 @@ public class TeacherController : MonoBehaviour
 
         // Smooth visual suspicion bar
         displaySuspicion = Mathf.Lerp(displaySuspicion, CurrentSuspicion, 1f - Mathf.Exp(-12f * Time.deltaTime));
+    }
+
+    /// <summary>
+    /// Plays the walk animation only while the teacher actually moved since the last frame.
+    /// </summary>
+    private void UpdateWalkAnimation()
+    {
+        if (animator == null) return;
+
+        bool moved = (transform.position - lastPosition).sqrMagnitude > 1e-8f;
+        animator.speed = moved ? 1f : 0f;
+        lastPosition = transform.position;
     }
 
     private void HandlePatrolAndSuspicion()
