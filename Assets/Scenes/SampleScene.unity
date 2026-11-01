@@ -658,7 +658,7 @@ MonoBehaviour:
   hand: {fileID: 506239595}
   answerPaper: {fileID: 2022953770}
   stamina: {fileID: 1605925076}
-  staminaCostPerWord: 12
+  staminaCostPerWord: 10
   charsPerSecond: 30
 --- !u!65 &303587379
 BoxCollider:
@@ -8452,7 +8452,7 @@ MonoBehaviour:
   mouseSensitivity: 2
   testPaper: {fileID: 0}
   writingFov: 50
-  writingFovHold: 0.6
+  writingFovHold: 0.3
   fovSpeed: 4
   writeShakeAmount: 0.5
   writeShakeDecay: 12

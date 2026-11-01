@@ -198,9 +198,5 @@ public class StaminaSystem : MonoBehaviour
         {
             GuiTheme.Label(labelRect, "your hand trembles... rest", labelStyle, Color.Lerp(GuiTheme.Blood, GuiTheme.BloodBright, pulse), uiAlpha);
         }
-        else
-        {
-            GuiTheme.Label(labelRect, "stamina", labelStyle, GuiTheme.WithAlpha(GuiTheme.Bone, 0.8f), uiAlpha);
-        }
     }
 }
