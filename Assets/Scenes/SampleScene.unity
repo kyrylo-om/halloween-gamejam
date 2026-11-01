@@ -16687,7 +16687,7 @@ MonoBehaviour:
   grainFarDistance: 8
   grainBaseIntensity: 0
   grainNearIntensity: 1
-  suspicionVignetteIntensity: 0.399
+  suspicionVignetteIntensity: 0.524
   vignetteBlendSpeed: 4
   audioSource: {fileID: 2200000016}
   footstepClip: {fileID: 8300000, guid: 20742727037e6ba45ab01ba33be2fe4e, type: 3}

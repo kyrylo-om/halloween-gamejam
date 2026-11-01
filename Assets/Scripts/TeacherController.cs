@@ -652,7 +652,8 @@ public class TeacherController : MonoBehaviour
 
         InitStyles();
 
-        // 1. Suspicion Bar HUD (shows when suspicion > 0)
+        // 1. Suspicion Bar HUD (shows when suspicion > 0) — disabled
+        /*
         if (displaySuspicion > 0.5f && !IsGameOver)
         {
             float barW = 320f;
@@ -688,6 +689,7 @@ public class TeacherController : MonoBehaviour
             GUI.color = Color.white;
             GUI.Label(new Rect(barX, barY, barW, barH), $"{Mathf.CeilToInt(CurrentSuspicion)}%", barStyle);
         }
+        */
 
         // 2. Game Over Screen
         if (IsGameOver)

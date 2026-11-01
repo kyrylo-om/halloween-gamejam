@@ -218,7 +218,8 @@ public class ExamManager : MonoBehaviour
         timerDigitsStyle.normal.textColor = timerColor;
         GUI.Label(new Rect(x, y + 16f, 200f, 32f), timeStr, timerDigitsStyle);
 
-        // Draw Progress Bar below Timer
+        // Draw Progress Bar below Timer — disabled
+        /*
         float barY = y + 54f;
         int wordsWritten = testPaper != null ? testPaper.WordsWritten : 0;
         int totalWords = testPaper != null ? testPaper.TotalWords : 1;
@@ -239,6 +240,7 @@ public class ExamManager : MonoBehaviour
         Color fillColor = ratio >= 0.99f ? progressCompleteColor : progressFillColor;
         GUI.color = fillColor;
         GUI.DrawTexture(new Rect(x, barDrawY, progressBarSize.x * ratio, progressBarSize.y), whiteTexture);
+        */
     }
 
     private void DrawWinScreen()
