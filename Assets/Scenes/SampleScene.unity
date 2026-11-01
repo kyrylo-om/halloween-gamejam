@@ -8450,6 +8450,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseSensitivity: 2
+  testPaper: {fileID: 0}
+  writingFov: 50
+  writingFovHold: 0.6
+  fovSpeed: 4
+  writeShakeAmount: 0.5
+  writeShakeDecay: 12
 --- !u!114 &1605925076
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -36,6 +36,7 @@ public class TestPaper : MonoBehaviour, IInteractable
     public int WordsWritten => wordsWritten;
     public int TotalWords => wordEnds.Count;
     public float Progress => wordEnds.Count > 0 ? (float)wordsWritten / wordEnds.Count : 0f;
+    public bool IsWriting => writeEnd >= 0;
 
     // Character index of the last character of each word
     private readonly List<int> wordEnds = new List<int>();
