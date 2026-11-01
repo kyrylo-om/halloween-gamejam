@@ -40,6 +40,10 @@ public class ExamManager : MonoBehaviour
     public TestPaper testPaper;
     public TeacherController teacher;
 
+    [Header("Audio")]
+    public AudioClip victoryClip;
+    public AudioClip lossClip;
+
     [Header("HUD Styling")]
     public Font uiFont;
     public Vector2 hudPosition = new Vector2(25f, 25f);
@@ -56,6 +60,8 @@ public class ExamManager : MonoBehaviour
 
     private float displayProgress = 0f;
     private float endScreenStartTime = -1f;
+    private AudioSource endAudioSource;
+    private bool endSoundPlayed = false;
 
     private GUIStyle timerTitleStyle;
     private GUIStyle timerDigitsStyle;
@@ -76,6 +82,10 @@ public class ExamManager : MonoBehaviour
         }
 
         TimeRemaining = examDuration;
+
+        endAudioSource = gameObject.AddComponent<AudioSource>();
+        endAudioSource.playOnAwake = false;
+        endAudioSource.spatialBlend = 0f;
     }
 
     void Start()
@@ -95,6 +105,7 @@ public class ExamManager : MonoBehaviour
     {
         if (IsWon || IsTimeUp || (teacher != null && teacher.IsGameOver))
         {
+            PlayEndSound();
             HandleRestartInput();
             return;
         }
@@ -145,6 +156,18 @@ public class ExamManager : MonoBehaviour
         // Unlock cursor for restart
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+
+    private void PlayEndSound()
+    {
+        if (endSoundPlayed) return;
+        endSoundPlayed = true;
+
+        AudioClip clip = IsWon ? victoryClip : lossClip;
+        if (clip != null)
+        {
+            endAudioSource.PlayOneShot(clip);
+        }
     }
 
     private void HandleRestartInput()
