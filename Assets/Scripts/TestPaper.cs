@@ -13,8 +13,6 @@ public class TestPaper : MonoBehaviour, IInteractable
     {
         get
         {
-            if (stamina != null && stamina.IsExhausted)
-                return "Hand exhausted! Rest to recover...";
             return "";
         }
     }

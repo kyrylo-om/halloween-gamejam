@@ -194,9 +194,5 @@ public class StaminaSystem : MonoBehaviour
 
         // Label above the bar
         Rect labelRect = new Rect(barX - 150f, barY - 40f, barSize.x + 300f, 34f);
-        if (IsExhausted)
-        {
-            GuiTheme.Label(labelRect, "your hand trembles... rest", labelStyle, Color.Lerp(GuiTheme.Blood, GuiTheme.BloodBright, pulse), uiAlpha);
-        }
     }
 }
