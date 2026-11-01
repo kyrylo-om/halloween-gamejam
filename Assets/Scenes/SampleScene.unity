@@ -380,8 +380,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Restart
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a0a2b0aa82312a703bd27fb5834877e4, type: 2}
-  m_sharedMaterial: {fileID: -3651961379945684035, guid: a0a2b0aa82312a703bd27fb5834877e4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b65bd0dc99af261ecbc6a5472414e548, type: 2}
+  m_sharedMaterial: {fileID: 6403450283112776126, guid: b65bd0dc99af261ecbc6a5472414e548, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4801,12 +4801,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1280, y: 720}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -6473,8 +6473,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Resume
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a0a2b0aa82312a703bd27fb5834877e4, type: 2}
-  m_sharedMaterial: {fileID: -3651961379945684035, guid: a0a2b0aa82312a703bd27fb5834877e4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b65bd0dc99af261ecbc6a5472414e548, type: 2}
+  m_sharedMaterial: {fileID: 6403450283112776126, guid: b65bd0dc99af261ecbc6a5472414e548, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -11998,8 +11998,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Main Menu
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a0a2b0aa82312a703bd27fb5834877e4, type: 2}
-  m_sharedMaterial: {fileID: -3651961379945684035, guid: a0a2b0aa82312a703bd27fb5834877e4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b65bd0dc99af261ecbc6a5472414e548, type: 2}
+  m_sharedMaterial: {fileID: 6403450283112776126, guid: b65bd0dc99af261ecbc6a5472414e548, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -13041,7 +13041,7 @@ MonoBehaviour:
   reticleThickness: 2
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   interactableColor: {r: 0, g: 1, b: 0, a: 1}
-  uiFont: {fileID: 12800000, guid: d3a8394697f503f3894550700044ff2a, type: 3}
+  uiFont: {fileID: 12800000, guid: 770a3377bdb5f5f98bacc887035a58f2, type: 3}
   interactRange: 15
   interactLayer:
     serializedVersion: 2
@@ -13075,7 +13075,7 @@ MonoBehaviour:
   recoveryRate: 28
   recoveryDelay: 0.45
   recoveryThreshold: 20
-  uiFont: {fileID: 12800000, guid: d3a8394697f503f3894550700044ff2a, type: 3}
+  uiFont: {fileID: 12800000, guid: 770a3377bdb5f5f98bacc887035a58f2, type: 3}
   showUI: 1
   barSize: {x: 220, y: 18}
   barOffsetFromBottom: {x: 0, y: 40}
@@ -13100,7 +13100,7 @@ MonoBehaviour:
   examDuration: 180
   testPaper: {fileID: 303587378}
   teacher: {fileID: 2200000015}
-  uiFont: {fileID: 12800000, guid: d3a8394697f503f3894550700044ff2a, type: 3}
+  uiFont: {fileID: 12800000, guid: 770a3377bdb5f5f98bacc887035a58f2, type: 3}
   hudPosition: {x: 25, y: 25}
   progressBarSize: {x: 220, y: 16}
   timerNormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -16701,7 +16701,7 @@ MonoBehaviour:
   footstepVolume: 0.85
   suspicionAlertClip: {fileID: 0}
   caughtStingClip: {fileID: 0}
-  uiFont: {fileID: 12800000, guid: d3a8394697f503f3894550700044ff2a, type: 3}
+  uiFont: {fileID: 12800000, guid: 770a3377bdb5f5f98bacc887035a58f2, type: 3}
 --- !u!82 &2200000016
 AudioSource:
   m_ObjectHideFlags: 0

@@ -654,6 +654,7 @@ public class TeacherController : MonoBehaviour
         if (ExamManager.Instance != null && (ExamManager.Instance.IsWon || ExamManager.Instance.IsTimeUp)) return;
 
         InitStyles();
+        GuiScale.Apply();
 
         // 1. Suspicion Bar HUD (shows when suspicion > 0) — disabled
         /*
@@ -661,7 +662,7 @@ public class TeacherController : MonoBehaviour
         {
             float barW = 320f;
             float barH = 20f;
-            float barX = (Screen.width - barW) * 0.5f;
+            float barX = (GuiScale.Width - barW) * 0.5f;
             float barY = 30f;
 
             // Header Warning
@@ -699,10 +700,10 @@ public class TeacherController : MonoBehaviour
         {
             // Dark red overlay
             GUI.color = new Color(0.45f, 0.02f, 0.02f, 0.82f);
-            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), whiteTexture);
+            GUI.DrawTexture(new Rect(0, 0, GuiScale.Width, GuiScale.Height), whiteTexture);
 
-            float cx = Screen.width * 0.5f;
-            float cy = Screen.height * 0.5f;
+            float cx = GuiScale.Width * 0.5f;
+            float cy = GuiScale.Height * 0.5f;
 
             // BUSTED Title
             GUI.color = Color.white;

@@ -171,6 +171,7 @@ public class ExamManager : MonoBehaviour
         if (whiteTexture == null) return;
 
         InitStyles();
+        GuiScale.Apply();
 
         // 1. In-game HUD: Timer & Writing Progress (Top-Left)
         if (!IsWon && !IsTimeUp && !(teacher != null && teacher.IsGameOver))
@@ -248,10 +249,10 @@ public class ExamManager : MonoBehaviour
     {
         // Festive green/gold backdrop
         GUI.color = new Color(0.02f, 0.25f, 0.08f, 0.88f);
-        GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), whiteTexture);
+        GUI.DrawTexture(new Rect(0, 0, GuiScale.Width, GuiScale.Height), whiteTexture);
 
-        float cx = Screen.width * 0.5f;
-        float cy = Screen.height * 0.5f;
+        float cx = GuiScale.Width * 0.5f;
+        float cy = GuiScale.Height * 0.5f;
 
         // Title
         GUI.color = Color.white;
@@ -277,10 +278,10 @@ public class ExamManager : MonoBehaviour
     {
         // Dark amber/red backdrop
         GUI.color = new Color(0.35f, 0.05f, 0.05f, 0.88f);
-        GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), whiteTexture);
+        GUI.DrawTexture(new Rect(0, 0, GuiScale.Width, GuiScale.Height), whiteTexture);
 
-        float cx = Screen.width * 0.5f;
-        float cy = Screen.height * 0.5f;
+        float cx = GuiScale.Width * 0.5f;
+        float cy = GuiScale.Height * 0.5f;
 
         // Title
         GUI.color = Color.white;

@@ -170,8 +170,9 @@ public class StaminaSystem : MonoBehaviour
         }
 
         // Position: Bottom center by default
-        float centerX = (Screen.width - barSize.x) * 0.5f + barOffsetFromBottom.x;
-        float barY = Screen.height - barSize.y - barOffsetFromBottom.y;
+        GuiScale.Apply();
+        float centerX = (GuiScale.Width - barSize.x) * 0.5f + barOffsetFromBottom.x;
+        float barY = GuiScale.Height - barSize.y - barOffsetFromBottom.y;
 
         Rect borderRect = new Rect(centerX - 2f, barY - 2f, barSize.x + 4f, barSize.y + 4f);
         Rect bgRect = new Rect(centerX, barY, barSize.x, barSize.y);

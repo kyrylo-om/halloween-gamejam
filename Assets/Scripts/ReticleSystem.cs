@@ -92,7 +92,8 @@ public class ReticleSystem : MonoBehaviour
             };
         }
 
-        Vector2 center = new Vector2(Screen.width / 2f, Screen.height / 2f);
+        GuiScale.Apply();
+        Vector2 center = new Vector2(GuiScale.Width / 2f, GuiScale.Height / 2f);
 
         GUI.color = currentColor;
 
