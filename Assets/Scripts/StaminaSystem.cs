@@ -41,14 +41,8 @@ public class StaminaSystem : MonoBehaviour
     [Header("UI Bar Settings")]
     public Font uiFont;
     public bool showUI = true;
-    public Vector2 barSize = new Vector2(220f, 18f);
-    public Vector2 barOffsetFromBottom = new Vector2(0f, 40f);
-    public Color highStaminaColor = new Color(0.2f, 0.85f, 0.35f, 0.95f);
-    public Color mediumStaminaColor = new Color(0.95f, 0.8f, 0.2f, 0.95f);
-    public Color lowStaminaColor = new Color(0.9f, 0.25f, 0.2f, 0.95f);
-    public Color exhaustedColor = new Color(0.7f, 0.1f, 0.1f, 0.9f);
-    public Color backgroundColor = new Color(0.08f, 0.08f, 0.08f, 0.8f);
-    public Color borderColor = new Color(0.25f, 0.25f, 0.25f, 0.9f);
+    public Vector2 barSize = new Vector2(150f, 22f);
+    public Vector2 barOffsetFromBottom = new Vector2(0f, 48f);
 
     public float CurrentStamina { get; private set; }
     public float NormalizedStamina => Mathf.Clamp01(CurrentStamina / Mathf.Max(1f, maxStamina));
@@ -56,9 +50,8 @@ public class StaminaSystem : MonoBehaviour
 
     private float displayStamina;
     private float timeSinceLastWrite;
-    private Texture2D whiteTexture;
+    private float uiAlpha;
     private GUIStyle labelStyle;
-    private GUIStyle warningStyle;
 
     void Awake()
     {
@@ -75,13 +68,6 @@ public class StaminaSystem : MonoBehaviour
         CurrentStamina = maxStamina;
         displayStamina = maxStamina;
         timeSinceLastWrite = recoveryDelay;
-    }
-
-    void Start()
-    {
-        whiteTexture = new Texture2D(1, 1);
-        whiteTexture.SetPixel(0, 0, Color.white);
-        whiteTexture.Apply();
     }
 
     void Update()
@@ -102,6 +88,9 @@ public class StaminaSystem : MonoBehaviour
 
         // Smooth visual bar interpolation
         displayStamina = Mathf.Lerp(displayStamina, CurrentStamina, 1f - Mathf.Exp(-16f * Time.deltaTime));
+
+        // Bar fades out while the hand is fully rested
+        uiAlpha = Mathf.MoveTowards(uiAlpha, CurrentStamina < maxStamina ? 1f : 0f, Time.deltaTime * 2.5f);
     }
 
     /// <summary>
@@ -138,100 +127,79 @@ public class StaminaSystem : MonoBehaviour
 
     void OnGUI()
     {
-        if (!showUI || Event.current.type != EventType.Repaint) return;
-
-        if (whiteTexture == null)
-        {
-            whiteTexture = new Texture2D(1, 1);
-            whiteTexture.SetPixel(0, 0, Color.white);
-            whiteTexture.Apply();
-        }
+        if (!showUI || uiAlpha <= 0f || Event.current.type != EventType.Repaint) return;
 
         if (labelStyle == null)
         {
             labelStyle = new GUIStyle(GUI.skin.label)
             {
                 font = uiFont,
-                alignment = TextAnchor.MiddleCenter,
-                fontSize = 11,
-                fontStyle = FontStyle.Bold
-            };
-        }
-
-        if (warningStyle == null)
-        {
-            warningStyle = new GUIStyle(GUI.skin.label)
-            {
-                font = uiFont,
-                alignment = TextAnchor.MiddleCenter,
-                fontSize = 12,
-                fontStyle = FontStyle.Bold
+                alignment = TextAnchor.LowerCenter,
+                fontSize = 17
             };
         }
 
         // Position: Bottom center by default
         GuiScale.Apply();
-        float centerX = (GuiScale.Width - barSize.x) * 0.5f + barOffsetFromBottom.x;
+        float barX = (GuiScale.Width - barSize.x) * 0.5f + barOffsetFromBottom.x;
         float barY = GuiScale.Height - barSize.y - barOffsetFromBottom.y;
 
-        Rect borderRect = new Rect(centerX - 2f, barY - 2f, barSize.x + 4f, barSize.y + 4f);
-        Rect bgRect = new Rect(centerX, barY, barSize.x, barSize.y);
-
         float fillRatio = Mathf.Clamp01(displayStamina / Mathf.Max(1f, maxStamina));
-        Rect fillRect = new Rect(centerX, barY, barSize.x * fillRatio, barSize.y);
+        float pulse = 0.5f + 0.5f * Mathf.Sin(Time.time * 7f);
 
-        // Pick color based on stamina level and exhaustion
+        // Bone when rested, candle-light when tiring, dried blood when exhausted
         Color fillColor;
         if (IsExhausted)
         {
-            // Pulsing red when exhausted
-            float pulse = 0.6f + 0.4f * Mathf.Sin(Time.time * 8f);
-            fillColor = Color.Lerp(exhaustedColor, Color.red, pulse);
-        }
-        else if (fillRatio > 0.5f)
-        {
-            fillColor = Color.Lerp(mediumStaminaColor, highStaminaColor, (fillRatio - 0.5f) * 2f);
+            fillColor = Color.Lerp(GuiTheme.Blood, GuiTheme.BloodBright, pulse);
         }
         else
         {
-            fillColor = Color.Lerp(lowStaminaColor, mediumStaminaColor, fillRatio * 2f);
+            fillColor = Color.Lerp(GuiTheme.Candle, GuiTheme.Bone, Mathf.InverseLerp(0.2f, 0.6f, fillRatio));
         }
 
-        // Draw border
-        GUI.color = borderColor;
-        GUI.DrawTexture(borderRect, whiteTexture);
+        // Tally marks in groups of five; each one drains from the top, right to left
+        const int markCount = 10;
+        const float markWidth = 3f;
+        float groupGap = barSize.x * 0.08f;
+        float step = (barSize.x - groupGap - markWidth) / (markCount - 1);
+        Matrix4x4 baseMatrix = GUI.matrix;
 
-        // Draw background
-        GUI.color = backgroundColor;
-        GUI.DrawTexture(bgRect, whiteTexture);
-
-        // Draw filled stamina bar
-        if (fillRatio > 0.001f)
+        for (int i = 0; i < markCount; i++)
         {
-            GUI.color = fillColor;
-            GUI.DrawTexture(fillRect, whiteTexture);
+            float x = barX + i * step + (i >= markCount / 2 ? groupGap : 0f);
+            float fill = Mathf.Clamp01(fillRatio * markCount - i);
+
+            // Hand-drawn look: each mark gets a fixed slight tilt and height variation; exhaustion makes them shake
+            float tilt = (Mathf.PerlinNoise(i * 7.31f, 0.5f) - 0.5f) * 14f;
+            float height = barSize.y * (0.9f + 0.1f * Mathf.PerlinNoise(i * 3.17f, 2.5f));
+            Vector2 shake = IsExhausted
+                ? new Vector2(Mathf.PerlinNoise(Time.time * 25f, i) - 0.5f, Mathf.PerlinNoise(i, Time.time * 25f) - 0.5f) * 3f
+                : Vector2.zero;
+
+            Vector2 pivot = new Vector2(x + markWidth * 0.5f, barY + barSize.y * 0.5f) + shake;
+            GUI.matrix = baseMatrix * Matrix4x4.TRS(pivot, Quaternion.Euler(0f, 0f, tilt), Vector3.one);
+
+            Rect mark = new Rect(-markWidth * 0.5f, -height * 0.5f, markWidth, height);
+            GuiTheme.Rect(new Rect(mark.x - 1f, mark.y - 1f, mark.width + 2f, mark.height + 2f), new Color(0f, 0f, 0f, 0.5f * uiAlpha));
+            GuiTheme.Rect(mark, GuiTheme.WithAlpha(GuiTheme.BoneDim, 0.25f * uiAlpha));
+            if (fill > 0.001f)
+            {
+                float h = height * fill;
+                GuiTheme.Rect(new Rect(mark.x, mark.yMax - h, mark.width, h), GuiTheme.WithAlpha(fillColor, uiAlpha));
+            }
         }
+        GUI.matrix = baseMatrix;
 
-        // Draw label text
-        GUI.color = Color.white;
-        string statusText = IsExhausted ? "EXHAUSTED - REST HAND" : $"STAMINA {Mathf.CeilToInt(CurrentStamina)}%";
-        labelStyle.normal.textColor = IsExhausted ? Color.red : Color.white;
-
-        // Shadow
-        GUI.color = new Color(0, 0, 0, 0.7f);
-        GUI.Label(new Rect(bgRect.x + 1, bgRect.y + 1, bgRect.width, bgRect.height), statusText, labelStyle);
-
-        // Foreground text
-        GUI.color = Color.white;
-        GUI.Label(bgRect, statusText, labelStyle);
-    }
-
-    void OnDestroy()
-    {
-        if (whiteTexture != null)
+        // Label above the bar
+        Rect labelRect = new Rect(barX - 100f, barY - 32f, barSize.x + 200f, 26f);
+        if (IsExhausted)
         {
-            Destroy(whiteTexture);
+            GuiTheme.Label(labelRect, "your hand trembles... rest", labelStyle, Color.Lerp(GuiTheme.Blood, GuiTheme.BloodBright, pulse), uiAlpha);
+        }
+        else
+        {
+            GuiTheme.Label(labelRect, "stamina", labelStyle, GuiTheme.BoneDim, uiAlpha);
         }
     }
 }
-

@@ -134,7 +134,7 @@ public class TeacherController : MonoBehaviour
     private Vector3 lastPosition;
 
     private float displaySuspicion = 0f;
-    private Texture2D whiteTexture;
+    private float gameOverStartTime = -1f;
     private GUIStyle headerStyle;
     private GUIStyle barStyle;
     private GUIStyle gameOverStyle;
@@ -208,10 +208,6 @@ public class TeacherController : MonoBehaviour
             transform.position = path.EvaluateSegment(0, 0f);
             baseWaypointRotation = transform.rotation;
         }
-
-        whiteTexture = new Texture2D(1, 1);
-        whiteTexture.SetPixel(0, 0, Color.white);
-        whiteTexture.Apply();
 
         if (showInGameVisionCones)
         {
@@ -650,7 +646,6 @@ public class TeacherController : MonoBehaviour
 
     void OnGUI()
     {
-        if (whiteTexture == null) return;
         if (ExamManager.Instance != null && (ExamManager.Instance.IsWon || ExamManager.Instance.IsTimeUp)) return;
 
         InitStyles();
@@ -698,23 +693,11 @@ public class TeacherController : MonoBehaviour
         // 2. Game Over Screen
         if (IsGameOver)
         {
-            // Dark red overlay
-            GUI.color = new Color(0.45f, 0.02f, 0.02f, 0.82f);
-            GUI.DrawTexture(new Rect(0, 0, GuiScale.Width, GuiScale.Height), whiteTexture);
+            if (gameOverStartTime < 0f) gameOverStartTime = Time.unscaledTime;
+            float alpha = Mathf.Clamp01((Time.unscaledTime - gameOverStartTime) / 0.6f);
 
-            float cx = GuiScale.Width * 0.5f;
-            float cy = GuiScale.Height * 0.5f;
-
-            // BUSTED Title
-            GUI.color = Color.white;
-            GUI.Label(new Rect(cx - 300f, cy - 110f, 600f, 60f), "BUSTED!", gameOverStyle);
-
-            // Reason Subtitle
-            GUI.Label(new Rect(cx - 350f, cy - 35f, 700f, 40f), GameOverReason, subStyle);
-
-            // Restart Button
-            Rect btnRect = new Rect(cx - 130f, cy + 30f, 260f, 50f);
-            if (GUI.Button(btnRect, "RETRY (Press R)", restartBtnStyle))
+            if (GuiTheme.EndScreen(alpha, new Color(0.12f, 0.01f, 0.01f, 0.88f), "Busted", GuiTheme.BloodBright,
+                                   GameOverReason, "Retry  (R)", gameOverStyle, subStyle, restartBtnStyle))
             {
                 RestartGame();
             }
@@ -752,9 +735,7 @@ public class TeacherController : MonoBehaviour
             {
                 font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
-                fontSize = 46,
-                fontStyle = FontStyle.Bold,
-                normal = { textColor = new Color(1f, 0.2f, 0.2f) }
+                fontSize = 96
             };
         }
 
@@ -764,19 +745,18 @@ public class TeacherController : MonoBehaviour
             {
                 font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
-                fontSize = 16,
-                normal = { textColor = Color.white }
+                fontSize = 20,
+                wordWrap = true
             };
         }
 
         if (restartBtnStyle == null)
         {
-            restartBtnStyle = new GUIStyle(GUI.skin.button)
+            restartBtnStyle = new GUIStyle(GUI.skin.label)
             {
                 font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
-                fontSize = 15,
-                fontStyle = FontStyle.Bold
+                fontSize = 22
             };
         }
     }
@@ -845,10 +825,5 @@ public class TeacherController : MonoBehaviour
 
             prevPoint = circlePoint;
         }
-    }
-
-    void OnDestroy()
-    {
-        if (whiteTexture != null) Destroy(whiteTexture);
     }
 }

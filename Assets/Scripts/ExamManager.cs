@@ -41,9 +41,6 @@ public class ExamManager : MonoBehaviour
     public Font uiFont;
     public Vector2 hudPosition = new Vector2(25f, 25f);
     public Vector2 progressBarSize = new Vector2(220f, 16f);
-    public Color timerNormalColor = Color.white;
-    public Color timerWarningColor = new Color(1f, 0.85f, 0.2f);
-    public Color timerCriticalColor = new Color(1f, 0.25f, 0.2f);
     public Color progressFillColor = new Color(0.25f, 0.75f, 1f, 0.95f);
     public Color progressCompleteColor = new Color(0.3f, 0.9f, 0.4f, 0.95f);
 
@@ -55,13 +52,11 @@ public class ExamManager : MonoBehaviour
     public bool IsGameOver => IsTimeUp || (teacher != null && teacher.IsGameOver);
 
     private float displayProgress = 0f;
-    private Texture2D whiteTexture;
+    private float endScreenStartTime = -1f;
 
     private GUIStyle timerTitleStyle;
     private GUIStyle timerDigitsStyle;
-    private GUIStyle progressLabelStyle;
-    private GUIStyle winTitleStyle;
-    private GUIStyle loseTitleStyle;
+    private GUIStyle titleStyle;
     private GUIStyle subtitleStyle;
     private GUIStyle buttonStyle;
 
@@ -91,10 +86,6 @@ public class ExamManager : MonoBehaviour
         {
             teacher = FindAnyObjectByType<TeacherController>();
         }
-
-        whiteTexture = new Texture2D(1, 1);
-        whiteTexture.SetPixel(0, 0, Color.white);
-        whiteTexture.Apply();
     }
 
     void Update()
@@ -168,26 +159,28 @@ public class ExamManager : MonoBehaviour
 
     void OnGUI()
     {
-        if (whiteTexture == null) return;
-
         InitStyles();
         GuiScale.Apply();
 
-        // 1. In-game HUD: Timer & Writing Progress (Top-Left)
+        // 1. In-game HUD: Timer (Top-Left)
         if (!IsWon && !IsTimeUp && !(teacher != null && teacher.IsGameOver))
         {
             DrawHUD();
+            return;
         }
+
+        if (endScreenStartTime < 0f) endScreenStartTime = Time.unscaledTime;
+        float alpha = Mathf.Clamp01((Time.unscaledTime - endScreenStartTime) / 0.8f);
 
         // 2. Victory Win Screen
         if (IsWon)
         {
-            DrawWinScreen();
+            DrawWinScreen(alpha);
         }
         // 3. Time's Up Lose Screen
         else if (IsTimeUp && !(teacher != null && teacher.IsGameOver))
         {
-            DrawTimeUpScreen();
+            DrawTimeUpScreen(alpha);
         }
     }
 
@@ -201,24 +194,30 @@ public class ExamManager : MonoBehaviour
         int seconds = Mathf.FloorToInt(TimeRemaining % 60f);
         string timeStr = $"{minutes:00}:{seconds:00}";
 
-        // Pick timer text color based on remaining time
-        Color timerColor = timerNormalColor;
+        // Pick timer color based on remaining time
+        Color timerColor = GuiTheme.Bone;
         if (TimeRemaining <= 30f)
         {
-            float flash = 0.5f + 0.5f * Mathf.Sin(Time.time * 8f);
-            timerColor = Color.Lerp(timerCriticalColor, Color.white, flash * 0.4f);
+            float flash = 0.5f + 0.5f * Mathf.Sin(Time.time * 6f);
+            timerColor = Color.Lerp(GuiTheme.Blood, GuiTheme.BloodBright, flash);
         }
         else if (TimeRemaining <= 60f)
         {
-            timerColor = timerWarningColor;
+            timerColor = GuiTheme.Candle;
         }
 
-        // Draw Timer Panel
-        timerTitleStyle.normal.textColor = Color.gray;
-        GUI.Label(new Rect(x, y, 200f, 16f), "EXAM TIME LEFT", timerTitleStyle);
+        // Soft dark backdrop fading to the right
+        GuiTheme.Texture(new Rect(0f, 0f, x + 260f, y + 90f), GuiTheme.FadeRight, new Color(0f, 0f, 0f, 0.55f));
 
-        timerDigitsStyle.normal.textColor = timerColor;
-        GUI.Label(new Rect(x, y + 16f, 200f, 32f), timeStr, timerDigitsStyle);
+        GuiTheme.Label(new Rect(x, y, 200f, 18f), "time remaining", timerTitleStyle, GuiTheme.BoneDim);
+        GuiTheme.Label(new Rect(x, y + 14f, 200f, 46f), timeStr, timerDigitsStyle, timerColor);
+
+        // Thin line that burns down with the remaining time
+        float lineW = 120f;
+        float ratio = Mathf.Clamp01(TimeRemaining / Mathf.Max(1f, examDuration));
+        GuiTheme.Rect(new Rect(x + 2f, y + 62f, lineW, 1f), GuiTheme.WithAlpha(GuiTheme.BoneDim, 0.4f));
+        GuiTheme.Rect(new Rect(x + 2f, y + 61f, lineW * ratio, 2f), timerColor);
+        GuiTheme.Texture(new Rect(x + 2f + lineW * ratio - 4f, y + 58f, 8f, 8f), GuiTheme.Dot, GuiTheme.WithAlpha(timerColor, 0.6f));
 
         // Draw Progress Bar below Timer — disabled
         /*
@@ -245,57 +244,27 @@ public class ExamManager : MonoBehaviour
         */
     }
 
-    private void DrawWinScreen()
+    private void DrawWinScreen(float alpha)
     {
-        // Festive green/gold backdrop
-        GUI.color = new Color(0.02f, 0.25f, 0.08f, 0.88f);
-        GUI.DrawTexture(new Rect(0, 0, GuiScale.Width, GuiScale.Height), whiteTexture);
-
-        float cx = GuiScale.Width * 0.5f;
-        float cy = GuiScale.Height * 0.5f;
-
-        // Title
-        GUI.color = Color.white;
-        GUI.Label(new Rect(cx - 300f, cy - 120f, 600f, 60f), "EXAM PASSED! 🎓", winTitleStyle);
-
-        // Subtitle
         int minutes = Mathf.FloorToInt(ElapsedTime / 60f);
         int seconds = Mathf.FloorToInt(ElapsedTime % 60f);
         string timeTaken = $"{minutes:00}:{seconds:00}";
 
-        string winMsg = $"You finished copying the entire essay without getting caught!\nTime taken: {timeTaken}";
-        GUI.Label(new Rect(cx - 350f, cy - 40f, 700f, 50f), winMsg, subtitleStyle);
-
-        // Restart / Play Again Button
-        Rect btnRect = new Rect(cx - 140f, cy + 35f, 280f, 50f);
-        if (GUI.Button(btnRect, "PLAY AGAIN (Press R)", buttonStyle))
+        string winMsg = $"The essay is copied and no one saw a thing.\nTime taken: {timeTaken}";
+        if (GuiTheme.EndScreen(alpha, new Color(0.02f, 0.03f, 0.02f, 0.9f), "Exam Passed", GuiTheme.Candle,
+                               winMsg, "Play again  (R)", titleStyle, subtitleStyle, buttonStyle))
         {
             RestartExam();
         }
     }
 
-    private void DrawTimeUpScreen()
+    private void DrawTimeUpScreen(float alpha)
     {
-        // Dark amber/red backdrop
-        GUI.color = new Color(0.35f, 0.05f, 0.05f, 0.88f);
-        GUI.DrawTexture(new Rect(0, 0, GuiScale.Width, GuiScale.Height), whiteTexture);
-
-        float cx = GuiScale.Width * 0.5f;
-        float cy = GuiScale.Height * 0.5f;
-
-        // Title
-        GUI.color = Color.white;
-        GUI.Label(new Rect(cx - 300f, cy - 120f, 600f, 60f), "TIME'S UP! ⏰", loseTitleStyle);
-
-        // Subtitle
         int wordsWritten = testPaper != null ? testPaper.WordsWritten : 0;
         int totalWords = testPaper != null ? testPaper.TotalWords : 1;
-        string msg = $"Pencils down! The exam has ended.\nYou only finished {wordsWritten} of {totalWords} words.";
-        GUI.Label(new Rect(cx - 350f, cy - 40f, 700f, 50f), msg, subtitleStyle);
-
-        // Restart Button
-        Rect btnRect = new Rect(cx - 140f, cy + 35f, 280f, 50f);
-        if (GUI.Button(btnRect, "RETRY EXAM (Press R)", buttonStyle))
+        string msg = $"Pencils down. The bell has tolled.\nYou only finished {wordsWritten} of {totalWords} words.";
+        if (GuiTheme.EndScreen(alpha, new Color(0.06f, 0.02f, 0.02f, 0.9f), "Time's Up", GuiTheme.BloodBright,
+                               msg, "Retry exam  (R)", titleStyle, subtitleStyle, buttonStyle))
         {
             RestartExam();
         }
@@ -308,8 +277,7 @@ public class ExamManager : MonoBehaviour
             timerTitleStyle = new GUIStyle(GUI.skin.label)
             {
                 font = uiFont,
-                fontSize = 11,
-                fontStyle = FontStyle.Bold
+                fontSize = 15
             };
         }
 
@@ -318,42 +286,17 @@ public class ExamManager : MonoBehaviour
             timerDigitsStyle = new GUIStyle(GUI.skin.label)
             {
                 font = uiFont,
-                fontSize = 26,
-                fontStyle = FontStyle.Bold
+                fontSize = 40
             };
         }
 
-        if (progressLabelStyle == null)
+        if (titleStyle == null)
         {
-            progressLabelStyle = new GUIStyle(GUI.skin.label)
-            {
-                font = uiFont,
-                fontSize = 11,
-                fontStyle = FontStyle.Bold
-            };
-        }
-
-        if (winTitleStyle == null)
-        {
-            winTitleStyle = new GUIStyle(GUI.skin.label)
+            titleStyle = new GUIStyle(GUI.skin.label)
             {
                 font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
-                fontSize = 44,
-                fontStyle = FontStyle.Bold,
-                normal = { textColor = new Color(0.4f, 1f, 0.4f) }
-            };
-        }
-
-        if (loseTitleStyle == null)
-        {
-            loseTitleStyle = new GUIStyle(GUI.skin.label)
-            {
-                font = uiFont,
-                alignment = TextAnchor.MiddleCenter,
-                fontSize = 44,
-                fontStyle = FontStyle.Bold,
-                normal = { textColor = new Color(1f, 0.3f, 0.3f) }
+                fontSize = 84
             };
         }
 
@@ -363,26 +306,20 @@ public class ExamManager : MonoBehaviour
             {
                 font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
-                fontSize = 16,
-                normal = { textColor = Color.white }
+                fontSize = 20,
+                wordWrap = true
             };
         }
 
         if (buttonStyle == null)
         {
-            buttonStyle = new GUIStyle(GUI.skin.button)
+            buttonStyle = new GUIStyle(GUI.skin.label)
             {
                 font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
-                fontSize = 15,
-                fontStyle = FontStyle.Bold
+                fontSize = 22
             };
         }
-    }
-
-    void OnDestroy()
-    {
-        if (whiteTexture != null) Destroy(whiteTexture);
     }
 }
 

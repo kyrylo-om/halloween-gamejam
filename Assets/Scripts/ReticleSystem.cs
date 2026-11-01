@@ -11,28 +11,19 @@ public class ReticleSystem : MonoBehaviour
     [Header("Reticle Settings")]
     public float reticleSize = 20f;
     public float reticleThickness = 2f;
-    public Color normalColor = Color.white;
-    public Color interactableColor = Color.green;
     public Font uiFont;
 
     [Header("Raycast Settings")]
     public float interactRange = 10f;
     public LayerMask interactLayer = ~0;
 
-    private Texture2D reticleTexture;
-    private Color currentColor;
+    private float hoverBlend;
     private IInteractable currentTarget;
     private string currentPrompt = "";
     private GUIStyle promptStyle;
 
     void Start()
     {
-        // Create a 1x1 white texture used to draw the reticle lines
-        reticleTexture = new Texture2D(1, 1);
-        reticleTexture.SetPixel(0, 0, Color.white);
-        reticleTexture.Apply();
-        currentColor = normalColor;
-
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -46,6 +37,8 @@ public class ReticleSystem : MonoBehaviour
             Cursor.visible = true;
         }
 
+        hoverBlend = Mathf.MoveTowards(hoverBlend, currentTarget != null ? 1f : 0f, Time.unscaledDeltaTime * 8f);
+
         // Raycast from camera center
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
@@ -56,7 +49,6 @@ public class ReticleSystem : MonoBehaviour
             if (interactable != null)
             {
                 currentTarget = interactable;
-                currentColor = interactableColor;
                 currentPrompt = interactable.InteractionPrompt;
 
                 // Left mouse button to interact
@@ -69,7 +61,6 @@ public class ReticleSystem : MonoBehaviour
         }
 
         currentTarget = null;
-        currentColor = normalColor;
         currentPrompt = "";
 
         // Click to re-lock cursor when not on interactable
@@ -88,56 +79,42 @@ public class ReticleSystem : MonoBehaviour
             {
                 font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
-                fontSize = 18
+                fontSize = 20
             };
         }
 
         GuiScale.Apply();
         Vector2 center = new Vector2(GuiScale.Width / 2f, GuiScale.Height / 2f);
+        Color color = Color.Lerp(GuiTheme.WithAlpha(GuiTheme.Bone, 0.6f), GuiTheme.Candle, hoverBlend);
 
-        GUI.color = currentColor;
+        // Center dot with a dark halo so it reads on bright surfaces
+        float dotSize = reticleThickness + 2f + hoverBlend;
+        GuiTheme.Texture(new Rect(center.x - dotSize, center.y - dotSize, dotSize * 2f, dotSize * 2f), GuiTheme.Dot, new Color(0f, 0f, 0f, 0.35f));
+        GuiTheme.Texture(new Rect(center.x - dotSize / 2f, center.y - dotSize / 2f, dotSize, dotSize), GuiTheme.Dot, color);
 
-        // Horizontal line
-        GUI.DrawTexture(
-            new Rect(center.x - reticleSize / 2f, center.y - reticleThickness / 2f,
-                      reticleSize, reticleThickness),
-            reticleTexture);
-
-        // Vertical line
-        GUI.DrawTexture(
-            new Rect(center.x - reticleThickness / 2f, center.y - reticleSize / 2f,
-                      reticleThickness, reticleSize),
-            reticleTexture);
-
-        // Center dot
-        float dotSize = reticleThickness + 2f;
-        GUI.DrawTexture(
-            new Rect(center.x - dotSize / 2f, center.y - dotSize / 2f, dotSize, dotSize),
-            reticleTexture);
-
-        GUI.color = Color.white;
+        // Corner brackets close in around interactables
+        if (hoverBlend > 0f)
+        {
+            float half = reticleSize * Mathf.Lerp(1.4f, 0.75f, hoverBlend);
+            float arm = reticleSize * 0.3f;
+            float t = reticleThickness * 0.75f;
+            Color bracket = GuiTheme.WithAlpha(GuiTheme.Candle, hoverBlend);
+            for (int i = 0; i < 4; i++)
+            {
+                float sx = (i & 1) == 0 ? -1f : 1f;
+                float sy = (i & 2) == 0 ? -1f : 1f;
+                float cx = center.x + sx * half;
+                float cy = center.y + sy * half;
+                GuiTheme.Rect(new Rect(sx < 0f ? cx : cx - arm, sy < 0f ? cy : cy - t, arm, t), bracket);
+                GuiTheme.Rect(new Rect(sx < 0f ? cx : cx - t, sy < 0f ? cy : cy - arm, t, arm), bracket);
+            }
+        }
 
         // Interaction prompt text below reticle
         if (!string.IsNullOrEmpty(currentPrompt))
         {
-            Rect promptRect = new Rect(center.x - 150f, center.y + reticleSize + 10f, 300f, 30f);
-
-            // Shadow
-            promptStyle.normal.textColor = Color.black;
-            GUI.Label(new Rect(promptRect.x + 1, promptRect.y + 1,
-                               promptRect.width, promptRect.height),
-                      currentPrompt, promptStyle);
-
-            // Text
-            promptStyle.normal.textColor = Color.white;
-            GUI.Label(promptRect, currentPrompt, promptStyle);
+            Rect promptRect = new Rect(center.x - 200f, center.y + reticleSize + 14f, 400f, 30f);
+            GuiTheme.Label(promptRect, currentPrompt, promptStyle, GuiTheme.Bone, Mathf.Max(0.3f, hoverBlend));
         }
     }
-
-    void OnDestroy()
-    {
-        if (reticleTexture != null)
-            Destroy(reticleTexture);
-    }
 }
-
