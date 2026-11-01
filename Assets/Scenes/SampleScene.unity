@@ -570,6 +570,58 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1403170470}
   m_SourcePrefab: {fileID: 100100000, guid: 90a4883636b111411a85595f77cdb5a3, type: 3}
+--- !u!1 &276094351
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 276094353}
+  - component: {fileID: 276094352}
+  m_Layer: 0
+  m_Name: Cloud Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &276094352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 276094351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 764904e5c031c6f8fb78c063c2d49d94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CloudSpawner
+  cloudMaterial: {fileID: 2100000, guid: fc46786db39024a5f816a4206fab9f11, type: 2}
+  areaSize: {x: 10, y: 0.27, z: 13}
+  spawnInterval: {x: 3, y: 8}
+  cloudSize: {x: 1, y: 2}
+  lifetime: {x: 6, y: 12}
+  fadeDuration: 2
+  maxAlpha: 0.3
+  driftSpeed: 0.2
+--- !u!4 &276094353
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 276094351}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.5, y: 0.131, z: -0.9}
+  m_LocalScale: {x: 1.2033, y: 1.2033, z: 1.2033}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &303587377
 GameObject:
   m_ObjectHideFlags: 0
@@ -9315,7 +9367,13 @@ MonoBehaviour:
   answers: {fileID: 4900000, guid: 06a1aeb5ec20d516182903fd8d1d4011, type: 3}
   text: {fileID: 1081566933}
   pullOutOffset: {x: 0, y: 0, z: -0.4}
-  slideSpeed: 20
+  pullOutDuration: 0.45
+  tuckInDuration: 0.3
+  liftHeight: 0.015
+  slideTilt: {x: -6, y: 8, z: 3}
+  restTilt: {x: 0, y: -5, z: 0}
+  holdSway: 0.003
+  holdSwayAngle: 1.2
   audioSource: {fileID: 2022953772}
   paperSlideOutClip: {fileID: 8300000, guid: 8050209bd0a8b2c4fb646675f2e36e91, type: 3}
   paperSlideInClip: {fileID: 8300000, guid: a0f0eff601db0c845b2b9f31346b6a75, type: 3}
@@ -9790,3 +9848,4 @@ SceneRoots:
   - {fileID: 1754118257}
   - {fileID: 421655532}
   - {fileID: 920834808}
+  - {fileID: 276094353}
