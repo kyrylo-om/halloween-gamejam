@@ -38,6 +38,7 @@ public class ExamManager : MonoBehaviour
     public TeacherController teacher;
 
     [Header("HUD Styling")]
+    public Font uiFont;
     public Vector2 hudPosition = new Vector2(25f, 25f);
     public Vector2 progressBarSize = new Vector2(220f, 16f);
     public Color timerNormalColor = Color.white;
@@ -305,6 +306,7 @@ public class ExamManager : MonoBehaviour
         {
             timerTitleStyle = new GUIStyle(GUI.skin.label)
             {
+                font = uiFont,
                 fontSize = 11,
                 fontStyle = FontStyle.Bold
             };
@@ -314,6 +316,7 @@ public class ExamManager : MonoBehaviour
         {
             timerDigitsStyle = new GUIStyle(GUI.skin.label)
             {
+                font = uiFont,
                 fontSize = 26,
                 fontStyle = FontStyle.Bold
             };
@@ -323,6 +326,7 @@ public class ExamManager : MonoBehaviour
         {
             progressLabelStyle = new GUIStyle(GUI.skin.label)
             {
+                font = uiFont,
                 fontSize = 11,
                 fontStyle = FontStyle.Bold
             };
@@ -332,6 +336,7 @@ public class ExamManager : MonoBehaviour
         {
             winTitleStyle = new GUIStyle(GUI.skin.label)
             {
+                font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 44,
                 fontStyle = FontStyle.Bold,
@@ -343,6 +348,7 @@ public class ExamManager : MonoBehaviour
         {
             loseTitleStyle = new GUIStyle(GUI.skin.label)
             {
+                font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 44,
                 fontStyle = FontStyle.Bold,
@@ -354,6 +360,7 @@ public class ExamManager : MonoBehaviour
         {
             subtitleStyle = new GUIStyle(GUI.skin.label)
             {
+                font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 16,
                 normal = { textColor = Color.white }
@@ -364,6 +371,7 @@ public class ExamManager : MonoBehaviour
         {
             buttonStyle = new GUIStyle(GUI.skin.button)
             {
+                font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 15,
                 fontStyle = FontStyle.Bold

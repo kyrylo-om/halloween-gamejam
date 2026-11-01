@@ -13,6 +13,7 @@ public class ReticleSystem : MonoBehaviour
     public float reticleThickness = 2f;
     public Color normalColor = Color.white;
     public Color interactableColor = Color.green;
+    public Font uiFont;
 
     [Header("Raycast Settings")]
     public float interactRange = 10f;
@@ -85,6 +86,7 @@ public class ReticleSystem : MonoBehaviour
         {
             promptStyle = new GUIStyle(GUI.skin.label)
             {
+                font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 18
             };

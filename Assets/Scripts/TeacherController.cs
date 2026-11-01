@@ -108,6 +108,9 @@ public class TeacherController : MonoBehaviour
     [Tooltip("Optional sting played when caught red-handed.")]
     public AudioClip caughtStingClip;
 
+    [Header("HUD")]
+    public Font uiFont;
+
     // Runtime state properties
     public bool IsPlayerCheating => answerPaper != null && answerPaper.IsOut;
     public TeacherState CurrentState { get; private set; } = TeacherState.Walking;
@@ -723,6 +726,7 @@ public class TeacherController : MonoBehaviour
         {
             headerStyle = new GUIStyle(GUI.skin.label)
             {
+                font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 13,
                 fontStyle = FontStyle.Bold
@@ -733,6 +737,7 @@ public class TeacherController : MonoBehaviour
         {
             barStyle = new GUIStyle(GUI.skin.label)
             {
+                font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 11,
                 fontStyle = FontStyle.Bold,
@@ -744,6 +749,7 @@ public class TeacherController : MonoBehaviour
         {
             gameOverStyle = new GUIStyle(GUI.skin.label)
             {
+                font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 46,
                 fontStyle = FontStyle.Bold,
@@ -755,6 +761,7 @@ public class TeacherController : MonoBehaviour
         {
             subStyle = new GUIStyle(GUI.skin.label)
             {
+                font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 16,
                 normal = { textColor = Color.white }
@@ -765,6 +772,7 @@ public class TeacherController : MonoBehaviour
         {
             restartBtnStyle = new GUIStyle(GUI.skin.button)
             {
+                font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 15,
                 fontStyle = FontStyle.Bold

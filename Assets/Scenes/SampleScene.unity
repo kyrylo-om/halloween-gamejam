@@ -380,8 +380,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Restart
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a0a2b0aa82312a703bd27fb5834877e4, type: 2}
+  m_sharedMaterial: {fileID: -3651961379945684035, guid: a0a2b0aa82312a703bd27fb5834877e4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1410,7 +1410,7 @@ Transform:
   m_GameObject: {fileID: 303587377}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.771, z: -0.16319999}
+  m_LocalPosition: {x: 0, y: 0.771, z: -0.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1973,14 +1973,14 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 003d5c26aa208fcd2ade8c380e7e30a9, type: 2}
+  m_sharedMaterial: {fileID: -4349643104887875605, guid: 003d5c26aa208fcd2ade8c380e7e30a9, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278190080
   m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -2071,7 +2071,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - {fileID: -4349643104887875605, guid: 003d5c26aa208fcd2ade8c380e7e30a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6473,8 +6473,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Resume
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a0a2b0aa82312a703bd27fb5834877e4, type: 2}
+  m_sharedMaterial: {fileID: -3651961379945684035, guid: a0a2b0aa82312a703bd27fb5834877e4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -11998,8 +11998,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Main Menu
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a0a2b0aa82312a703bd27fb5834877e4, type: 2}
+  m_sharedMaterial: {fileID: -3651961379945684035, guid: a0a2b0aa82312a703bd27fb5834877e4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -12599,7 +12599,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4349343108686827406, guid: 90a4883636b111411a85595f77cdb5a3, type: 3}
       propertyPath: m_Intensity
-      value: 123.2
+      value: 50.84
       objectReference: {fileID: 0}
     - target: {fileID: 4349343108686827406, guid: 90a4883636b111411a85595f77cdb5a3, type: 3}
       propertyPath: m_SpotAngle
@@ -13041,6 +13041,7 @@ MonoBehaviour:
   reticleThickness: 2
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   interactableColor: {r: 0, g: 1, b: 0, a: 1}
+  uiFont: {fileID: 12800000, guid: d3a8394697f503f3894550700044ff2a, type: 3}
   interactRange: 15
   interactLayer:
     serializedVersion: 2
@@ -13074,6 +13075,7 @@ MonoBehaviour:
   recoveryRate: 28
   recoveryDelay: 0.45
   recoveryThreshold: 20
+  uiFont: {fileID: 12800000, guid: d3a8394697f503f3894550700044ff2a, type: 3}
   showUI: 1
   barSize: {x: 220, y: 18}
   barOffsetFromBottom: {x: 0, y: 40}
@@ -13098,6 +13100,7 @@ MonoBehaviour:
   examDuration: 180
   testPaper: {fileID: 303587378}
   teacher: {fileID: 2200000015}
+  uiFont: {fileID: 12800000, guid: d3a8394697f503f3894550700044ff2a, type: 3}
   hudPosition: {x: 25, y: 25}
   progressBarSize: {x: 220, y: 16}
   timerNormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -16698,6 +16701,7 @@ MonoBehaviour:
   footstepVolume: 0.85
   suspicionAlertClip: {fileID: 0}
   caughtStingClip: {fileID: 0}
+  uiFont: {fileID: 12800000, guid: d3a8394697f503f3894550700044ff2a, type: 3}
 --- !u!82 &2200000016
 AudioSource:
   m_ObjectHideFlags: 0

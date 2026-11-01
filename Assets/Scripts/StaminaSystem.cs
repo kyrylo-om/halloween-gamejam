@@ -39,6 +39,7 @@ public class StaminaSystem : MonoBehaviour
     public float recoveryThreshold = 20f;
 
     [Header("UI Bar Settings")]
+    public Font uiFont;
     public bool showUI = true;
     public Vector2 barSize = new Vector2(220f, 18f);
     public Vector2 barOffsetFromBottom = new Vector2(0f, 40f);
@@ -150,6 +151,7 @@ public class StaminaSystem : MonoBehaviour
         {
             labelStyle = new GUIStyle(GUI.skin.label)
             {
+                font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 11,
                 fontStyle = FontStyle.Bold
@@ -160,6 +162,7 @@ public class StaminaSystem : MonoBehaviour
         {
             warningStyle = new GUIStyle(GUI.skin.label)
             {
+                font = uiFont,
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 12,
                 fontStyle = FontStyle.Bold
