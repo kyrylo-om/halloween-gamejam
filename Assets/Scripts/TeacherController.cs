@@ -103,7 +103,9 @@ public class TeacherController : MonoBehaviour
     public float footstepInterval = 0.55f;
     [Range(0f, 1f)]
     public float footstepVolume = 0.85f;
-    [Tooltip("Optional sting played when teacher starts suspecting.")]
+    [Tooltip("Separate AudioSource for the alert sting. Auto-created if null.")]
+    public AudioSource alertAudioSource;
+    [Tooltip("Optional sting played each time the teacher spots the cheat paper.")]
     public AudioClip suspicionAlertClip;
     [Tooltip("Optional sting played when caught red-handed.")]
     public AudioClip caughtStingClip;
@@ -164,6 +166,16 @@ public class TeacherController : MonoBehaviour
         audioSource.minDistance = 1.5f;
         audioSource.maxDistance = 15f;
         audioSource.rolloffMode = AudioRolloffMode.Linear;
+
+        if (alertAudioSource == null)
+        {
+            alertAudioSource = gameObject.AddComponent<AudioSource>();
+        }
+        alertAudioSource.playOnAwake = false;
+        alertAudioSource.spatialBlend = 1f;
+        alertAudioSource.minDistance = 1.5f;
+        alertAudioSource.maxDistance = 15f;
+        alertAudioSource.rolloffMode = AudioRolloffMode.Linear;
 
         animator = GetComponentInChildren<Animator>();
         lastPosition = transform.position;
@@ -385,10 +397,9 @@ public class TeacherController : MonoBehaviour
 
     private void PlayAlertSound()
     {
-        if (audioSource != null && suspicionAlertClip != null)
+        if (alertAudioSource != null && suspicionAlertClip != null)
         {
-            audioSource.pitch = 1f;
-            audioSource.PlayOneShot(suspicionAlertClip, 0.85f);
+            alertAudioSource.PlayOneShot(suspicionAlertClip, 0.85f);
         }
     }
 
@@ -451,6 +462,7 @@ public class TeacherController : MonoBehaviour
             // 1. Instant Spot Cone
             if (inInstantCone)
             {
+                if (!IsSuspectingPlayer) PlayAlertSound();
                 TriggerGameOver("Teacher caught you red-handed! Your cheat sheet was out while the teacher looked right at you!");
                 return;
             }
