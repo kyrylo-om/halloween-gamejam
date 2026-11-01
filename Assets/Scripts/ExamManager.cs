@@ -32,6 +32,9 @@ public class ExamManager : MonoBehaviour
     [Header("Exam Timer Settings")]
     [Tooltip("Total exam duration in seconds (180s = 3 minutes).")]
     public float examDuration = 180f;
+    [Tooltip("In-game minutes shown on the clock at the start. The clock counts down to 0 over examDuration.")]
+    public float clockStartMinutes = 40f;
+    private const float ClockStepSeconds = 10f;
 
     [Header("References")]
     public TestPaper testPaper;
@@ -189,9 +192,15 @@ public class ExamManager : MonoBehaviour
         float x = hudPosition.x;
         float y = hudPosition.y;
 
+        // Map real time onto the in-game clock, which ticks down in ClockStepSeconds steps.
+        // Real seconds per step = examDuration / (clockStartMinutes * 60 / ClockStepSeconds).
+        float clockSteps = clockStartMinutes * 60f / ClockStepSeconds;
+        float realSecondsPerStep = examDuration / clockSteps;
+        int clockSeconds = Mathf.CeilToInt(TimeRemaining / realSecondsPerStep) * (int)ClockStepSeconds;
+
         // Format Time MM:SS
-        int minutes = Mathf.FloorToInt(TimeRemaining / 60f);
-        int seconds = Mathf.FloorToInt(TimeRemaining % 60f);
+        int minutes = clockSeconds / 60;
+        int seconds = clockSeconds % 60;
         string timeStr = $"{minutes:00}:{seconds:00}";
 
         // Pick timer color based on remaining time

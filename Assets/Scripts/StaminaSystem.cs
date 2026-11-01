@@ -41,7 +41,7 @@ public class StaminaSystem : MonoBehaviour
     [Header("UI Bar Settings")]
     public Font uiFont;
     public bool showUI = true;
-    public Vector2 barSize = new Vector2(150f, 22f);
+    public Vector2 barSize = new Vector2(240f, 40f);
     public Vector2 barOffsetFromBottom = new Vector2(0f, 48f);
 
     public float CurrentStamina { get; private set; }
@@ -135,7 +135,7 @@ public class StaminaSystem : MonoBehaviour
             {
                 font = uiFont,
                 alignment = TextAnchor.LowerCenter,
-                fontSize = 17
+                fontSize = 24
             };
         }
 
@@ -160,7 +160,8 @@ public class StaminaSystem : MonoBehaviour
 
         // Tally marks in groups of five; each one drains from the top, right to left
         const int markCount = 10;
-        const float markWidth = 3f;
+        float markWidth = barSize.y * 0.14f;
+        float outline = Mathf.Max(1f, barSize.y * 0.05f);
         float groupGap = barSize.x * 0.08f;
         float step = (barSize.x - groupGap - markWidth) / (markCount - 1);
         Matrix4x4 baseMatrix = GUI.matrix;
@@ -174,15 +175,15 @@ public class StaminaSystem : MonoBehaviour
             float tilt = (Mathf.PerlinNoise(i * 7.31f, 0.5f) - 0.5f) * 14f;
             float height = barSize.y * (0.9f + 0.1f * Mathf.PerlinNoise(i * 3.17f, 2.5f));
             Vector2 shake = IsExhausted
-                ? new Vector2(Mathf.PerlinNoise(Time.time * 25f, i) - 0.5f, Mathf.PerlinNoise(i, Time.time * 25f) - 0.5f) * 3f
+                ? new Vector2(Mathf.PerlinNoise(Time.time * 25f, i) - 0.5f, Mathf.PerlinNoise(i, Time.time * 25f) - 0.5f) * barSize.y * 0.12f
                 : Vector2.zero;
 
             Vector2 pivot = new Vector2(x + markWidth * 0.5f, barY + barSize.y * 0.5f) + shake;
             GUI.matrix = baseMatrix * Matrix4x4.TRS(pivot, Quaternion.Euler(0f, 0f, tilt), Vector3.one);
 
             Rect mark = new Rect(-markWidth * 0.5f, -height * 0.5f, markWidth, height);
-            GuiTheme.Rect(new Rect(mark.x - 1f, mark.y - 1f, mark.width + 2f, mark.height + 2f), new Color(0f, 0f, 0f, 0.5f * uiAlpha));
-            GuiTheme.Rect(mark, GuiTheme.WithAlpha(GuiTheme.BoneDim, 0.25f * uiAlpha));
+            GuiTheme.Rect(new Rect(mark.x - outline, mark.y - outline, mark.width + 2f * outline, mark.height + 2f * outline), new Color(0f, 0f, 0f, 0.75f * uiAlpha));
+            GuiTheme.Rect(mark, GuiTheme.WithAlpha(GuiTheme.BoneDim, 0.4f * uiAlpha));
             if (fill > 0.001f)
             {
                 float h = height * fill;
@@ -192,14 +193,14 @@ public class StaminaSystem : MonoBehaviour
         GUI.matrix = baseMatrix;
 
         // Label above the bar
-        Rect labelRect = new Rect(barX - 100f, barY - 32f, barSize.x + 200f, 26f);
+        Rect labelRect = new Rect(barX - 150f, barY - 40f, barSize.x + 300f, 34f);
         if (IsExhausted)
         {
             GuiTheme.Label(labelRect, "your hand trembles... rest", labelStyle, Color.Lerp(GuiTheme.Blood, GuiTheme.BloodBright, pulse), uiAlpha);
         }
         else
         {
-            GuiTheme.Label(labelRect, "stamina", labelStyle, GuiTheme.BoneDim, uiAlpha);
+            GuiTheme.Label(labelRect, "stamina", labelStyle, GuiTheme.WithAlpha(GuiTheme.Bone, 0.8f), uiAlpha);
         }
     }
 }

@@ -13345,7 +13345,7 @@ MonoBehaviour:
   recoveryThreshold: 20
   uiFont: {fileID: 12800000, guid: 770a3377bdb5f5f98bacc887035a58f2, type: 3}
   showUI: 1
-  barSize: {x: 150, y: 22}
+  barSize: {x: 240, y: 40}
   barOffsetFromBottom: {x: 0, y: 48}
 --- !u!114 &1605925077
 MonoBehaviour:
@@ -13360,6 +13360,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExamManager
   examDuration: 180
+  clockStartMinutes: 40
   testPaper: {fileID: 303587378}
   teacher: {fileID: 2200000015}
   uiFont: {fileID: 12800000, guid: 770a3377bdb5f5f98bacc887035a58f2, type: 3}
