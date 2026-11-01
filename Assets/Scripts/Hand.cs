@@ -22,6 +22,15 @@ public class Hand : MonoBehaviour
     public float trembleSpeed = 14f;
     public AnswerPaper answerPaper;
 
+    [Header("Camera Sway")]
+    [Tooltip("Camera the hand reacts to. Defaults to the main camera.")]
+    public Transform cameraTransform;
+    [Tooltip("How far the hand drifts when the camera turns. Never moves vertically.")]
+    public float swayAmount = 0.06f;
+    public float maxSway = 0.02f;
+    [Tooltip("How quickly the hand catches up and settles after the camera stops.")]
+    public float swaySettleSpeed = 6f;
+
     [Header("Audio Settings (Placeholders)")]
     [Tooltip("AudioSource component. Auto-created if null.")]
     public AudioSource audioSource;
@@ -37,6 +46,8 @@ public class Hand : MonoBehaviour
     private float hop = 0f;
     private float exhaustedKick = 0f;
     private float tremble = 0f;
+    private Vector3 lagForward;
+    private Vector3 sway;
 
     void Awake()
     {
@@ -60,13 +71,32 @@ public class Hand : MonoBehaviour
         {
             answerPaper = FindAnyObjectByType<AnswerPaper>();
         }
+        if (cameraTransform == null && Camera.main != null)
+        {
+            cameraTransform = Camera.main.transform;
+        }
+        if (cameraTransform != null)
+        {
+            lagForward = cameraTransform.forward;
+        }
     }
 
+    /// <summary>
+    /// Lifts the pen over to a new point, like starting a new word.
+    /// </summary>
     public void MoveTo(Vector3 point)
     {
         target = point;
         hop = 1f;
         PlayWritingSound();
+    }
+
+    /// <summary>
+    /// Keeps the pen on the paper while it follows a moving point.
+    /// </summary>
+    public void Track(Vector3 point)
+    {
+        target = point;
     }
 
     /// <summary>
@@ -130,6 +160,20 @@ public class Hand : MonoBehaviour
             Mathf.PerlinNoise(t, 3f) - 0.5f,
             Mathf.PerlinNoise(t, 6f) - 0.5f) * (0.006f * tremble);
 
-        transform.position = position + Vector3.up * hop * hopHeight + fatigueOffset + trembleOffset;
+        // Drift with the camera while it turns, then settle back. A lagging copy of the
+        // view direction is subtracted, so only the change shows; vertical is dropped.
+        Vector3 swayTarget = Vector3.zero;
+        if (cameraTransform != null)
+        {
+            Vector3 forward = cameraTransform.forward;
+            float settle = 1f - Mathf.Exp(-swaySettleSpeed * Time.deltaTime);
+            lagForward = Vector3.Lerp(lagForward, forward, settle);
+            swayTarget = lagForward - forward;
+            swayTarget.y = 0f;
+            swayTarget = Vector3.ClampMagnitude(swayTarget * swayAmount, maxSway);
+        }
+        sway = Vector3.Lerp(sway, swayTarget, 1f - Mathf.Exp(-swaySettleSpeed * 2f * Time.deltaTime));
+
+        transform.position = position + Vector3.up * hop * hopHeight + fatigueOffset + trembleOffset + sway;
     }
 }

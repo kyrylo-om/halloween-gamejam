@@ -28,6 +28,10 @@ public class TestPaper : MonoBehaviour, IInteractable
     public StaminaSystem stamina;
     public float staminaCostPerWord = 12f;
 
+    [Header("Writing")]
+    [Tooltip("How fast the pen writes out a word, in characters per second.")]
+    public float charsPerSecond = 30f;
+
     // Progress properties for ExamManager / UI
     public int WordsWritten => wordsWritten;
     public int TotalWords => wordEnds.Count;
@@ -36,6 +40,10 @@ public class TestPaper : MonoBehaviour, IInteractable
     // Character index of the last character of each word
     private readonly List<int> wordEnds = new List<int>();
     private int wordsWritten = 0;
+
+    // Pen progress through the word being written, in characters
+    private float writeCursor;
+    private int writeEnd = -1;
 
     void Start()
     {
@@ -83,12 +91,19 @@ public class TestPaper : MonoBehaviour, IInteractable
             stamina.UseStamina(staminaCostPerWord);
         }
 
-        int lastChar = wordEnds[wordsWritten];
-        wordsWritten++;
-        text.maxVisibleCharacters = lastChar + 1;
+        // Finish the previous word instantly if the player clicks faster than the pen writes
+        if (writeEnd >= 0) text.maxVisibleCharacters = writeEnd + 1;
 
-        Vector3 wordEnd = text.textInfo.characterInfo[lastChar].bottomRight;
-        hand.MoveTo(text.transform.TransformPoint(wordEnd));
+        TMP_CharacterInfo[] chars = text.textInfo.characterInfo;
+        int start = wordsWritten == 0 ? 0 : wordEnds[wordsWritten - 1] + 1;
+        while (char.IsWhiteSpace(chars[start].character)) start++;
+
+        writeEnd = wordEnds[wordsWritten];
+        writeCursor = start;
+        wordsWritten++;
+
+        // Lift the pen over to the start of the word; Update then drags it along the letters
+        hand.MoveTo(PenPoint(start, 0f));
 
         // Trigger victory if all words from the answer sheet are written!
         if (wordsWritten >= wordEnds.Count)
@@ -98,5 +113,27 @@ public class TestPaper : MonoBehaviour, IInteractable
                 ExamManager.Instance.TriggerWin();
             }
         }
+    }
+
+    void Update()
+    {
+        if (writeEnd < 0) return;
+
+        writeCursor = Mathf.MoveTowards(writeCursor, writeEnd + 1, charsPerSecond * Time.deltaTime);
+
+        // Each letter appears as the pen starts on it
+        int i = Mathf.Min((int)writeCursor, writeEnd);
+        text.maxVisibleCharacters = Mathf.CeilToInt(writeCursor);
+        hand.Track(PenPoint(i, writeCursor - i));
+
+        if (writeCursor >= writeEnd + 1) writeEnd = -1;
+    }
+
+    // World point on the baseline, t of the way across character i
+    private Vector3 PenPoint(int i, float t)
+    {
+        TMP_CharacterInfo c = text.textInfo.characterInfo[i];
+        Vector3 local = new Vector3(Mathf.Lerp(c.bottomLeft.x, c.bottomRight.x, t), c.baseLine, 0f);
+        return text.transform.TransformPoint(local);
     }
 }
